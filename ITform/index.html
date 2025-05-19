@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Aion Form</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f5f5f5;
+                color: #333;
+            }
+
+            .container {
+                display: flex;
+                min-height: 100vh;
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            }
+
+            .left-column {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 40%;
+                background-color: #425467;
+                padding: 150px 60px 60px;
+                box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+                overflow-y: auto;
+                z-index: 10;
+            }
+
+            .right-column {
+                margin-left: 45%; 
+                width: 60%;
+                height: 100vh;
+                overflow-y: auto;
+                padding: 40px;
+                background-color: white;
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .form-container {
+                width: 100%;
+                max-width: 600px;
+                box-sizing: border-box;
+            }
+
+            .form-section {
+                margin-bottom: 30px;
+                padding: 20px;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            }
+
+            .form-section h3 {
+                color: #425467;
+                margin-top: 0;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #f0f0f0;
+            }
+
+            label {
+                display: block;
+                margin-bottom: 8px;
+                font-weight: 550;
+                color: #425467;
+                font-size: 20px;
+            }
+
+            p {
+                margin: 15px 0 8px;
+                font-weight: 600;
+                color: #425467;
+                font-size: 20px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="file"],
+            input[type="number"],
+            select,
+            textarea {
+                width: 100%;
+                padding: 12px 15px;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                box-sizing: border-box;
+                transition: all 0.3s ease;
+                font-size: 20px;
+                background-color: #f9f9f9;
+            }
+
+            input[type="text"]:focus,
+            input[type="email"]:focus,
+            input[type="tel"]:focus,
+            input[type="number"]:focus,
+            select:focus,
+            textarea:focus {
+                border-color: #F5891E;
+                outline: none;
+                background-color: #fff;
+                box-shadow: 0 0 0 2px rgba(245, 137, 30, 0.1);
+            }
+
+            input[type="tel"] {
+                padding: 12px 15px 12px 45px;
+            }
+
+            select {
+                appearance: none;
+                background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+                background-repeat: no-repeat;
+                background-position: right 15px center;
+                background-size: 15px;
+                padding-right: 40px;
+            }
+
+            .conditional-question {
+                display: none;
+                margin-top: 20px;
+                padding: 20px;
+                background-color: #f9f9f9;
+                border-radius: 6px;
+                border-left: 4px solid #F5891E;
+            }
+
+            input[type="submit"] {
+                background-color: #F5891E;
+                color: white;
+                padding: 12px 25px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 20px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                width: 100%;
+                margin-top: 20px;
+            }
+
+            input[type="submit"]:hover {
+                background-color: #D9781A;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
+            .phone-input-container {
+                position: relative;
+            }
+
+            .phone-input-container::before {
+                content: "#";
+                position: absolute;
+                left: 15px;
+                top: 36%;
+                transform: translateY(-50%);
+                font-size: 20px;
+                opacity: 0.7;
+                pointer-events: none; /* so it doesn't block clicks on input */
+            }
+
+            .phone-input-container input[type="tel"] {
+                padding-left: 40px; /* creates space for the icon */
+            }
+
+            img {
+                width: 70%;
+                height: auto;
+                border-radius: 15px;
+                margin: 0 auto 20px;
+                display: block;
+            }
+
+            .description {
+                color: #FFFFFF;
+                line-height: 1.6;
+            }
+
+            .description h2 {
+                color: #FFFFFF;
+                margin-top: 0;
+                margin-bottom: 20px;
+            }
+
+            .description p {
+                color: rgba(255, 255, 255, 0.9);
+                font-weight: normal;
+                margin: 0;
+            }
+
+            br {
+                margin-bottom: 10px;
+            }
+
+            h2 {
+                font-size: 40px;;
+            }
+
+            @media (max-width: 768px) {
+                body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                padding-right: 6%;
+                background-color: #f5f5f5;
+                color: #333;
+                zoom: 150%;
+                }
+
+                .container {
+                    flex-direction: column;
+                }
+
+                .left-column {
+                    position: relative;
+                    width: 100%;
+                    height: auto;
+                    padding: 30px 20px;
+                    text-align: center;
+                }
+
+                .right-column {
+                    margin-left: 0;
+                    width: 100%;
+                    height: auto;
+                    padding: 20px;
+                }
+
+                .left-column img {
+                    width: 50%;
+                    max-width: 200px;
+                    margin-bottom: 15px;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="left-column">
+                <img src="AionPic" alt="Aion">
+                <br>
+                <div class="description">
+                    <h2>Aion IT Transition Questionnaire</h2>
+                    <p>The outgoing IT department should complete this questionnaire in preparation for the property transition. Please submit it at least two weeks before the transition date. If you have any questions, contact the Aion Managment IT Team at technology@aionmanagement.com</p>
+                </div>
+            </div>
+            <div class="right-column">
+                <div class="form-container">
+                    <form id="aionForm" action="https://onboarding.aiontechnology.org/results" method="post" enctype="multipart/form-data" onsubmit="submitForm(event)">
+                        <label for="propertyName">Property Name:</label>
+                        <input type="text" id="propertyName" name="propertyName" required>
+                        
+                        <label for="managerEmail">Outgoing Property Manager Email:</label>
+                        <input type="email" id="managerEmail" name="managerEmail" required>
+                        
+                        <label for="itContactName">Outgoing IT Contact's Name:</label>
+                        <input type="text" id="itContactName" name="itContactName" required>
+                        
+                        <label for="itContactPhone">IT Contact's Phone Number:</label>
+                        <div class="phone-input-container">
+                            <input type="tel" id="itContactPhone" name="itContactPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required placeholder="***-***-****">
+                        </div>
+                        
+                        <label for="itContactEmail">IT Contact's Email:</label>
+                        <input type="email" id="itContactEmail" name="itContactEmail" required>
+                        
+                        <p>Will any IT hardware be removed from the property?</p>
+                        <select id="hardwareRemoval" name="hardwareRemoval" onchange="toggleHardwareDetails(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="hardwareDetails" class="conditional-question">
+                            <p>What will be removed?</p>
+                            <textarea 
+                                id="removedHardware" 
+                                name="removedHardware" 
+                                rows="4" 
+                                style="width: 100%; padding: 10px; margin-top: 10px;"
+                            ></textarea>
+                        </div>
+
+                        <p>Are Static IP's currently in use?</p>
+                        <select id="staticIPs" name="staticIPs" onchange="toggleStaticDetails(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="staticDetails" class="conditional-question">
+                            <p>List of Static IPs & assigned devices?</p>
+                            <textarea 
+                                id="IPs" 
+                                name="IPs" 
+                                rows="4" 
+                                style="width: 100%; padding: 10px; margin-top: 10px;"
+                            ></textarea>
+                        </div>
+
+                        <p>Is office network separate from guest network(s)?</p>
+                        <select id="networkSeparation" name="networkSeparation">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+
+                        <p>Is there a public/guest WIFI?</p>
+                        <select id="guestWifi" name="guestWifi" onchange="toggleWifiDetails(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="wifiDetails" class="conditional-question">
+                            <p>Please list SSID's & passwords for Wifi Network(s):</p>
+                            <textarea 
+                                id="wifiNetworks" 
+                                name="wifiNetworks" 
+                                rows="4" 
+                                style="width: 100%; padding: 10px; margin-top: 10px;"
+                            ></textarea>
+                        </div>
+
+                        <label for="officePhone">Office Phone Number(s):</label>
+                        <div class="phone-input-container">
+                            <input type="tel" id="officePhone" name="officePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="***-***-****">
+                        </div>
+
+                        <label for="computerCount">Number of computers (office & maintenance):</label>
+                        <input type="number" id="computerCount" name="computerCount" min="0">
+
+                        <label for="businessCenterComputers">Number of computers in the Business Center:</label>
+                        <input type="number" id="businessCenterComputers" name="businessCenterComputers" min="0">
+
+                        <label for="computerOS">What OS are the computers running?</label>
+                        <input type="text" id="computerOS" name="computerOS">
+
+                        <p>Will the PCs be wiped or reset?</p>
+                        <select id="pcWipe" name="pcWipe" onchange="toggleWipeDetails(this)">
+                            <option value="">Select an option</option>
+                            <option value="Wiped">Wiped</option>
+                            <option value="Reset">Reset</option>
+                            <option vlaue="No">No</option>
+                        </select>
+                        <div id="wipeDetails" class="conditional-question">
+                            <p>Will this be done prior to or on Transition Day?</p>
+                            <select id="wipeTiming" name="wipeTiming">
+                                <option value="">Select an option</option>
+                                <option value="Prior">Prior to Transition Day</option>
+                                <option value="On">On Transition Day</option>
+                            </select>
+                        </div>
+
+                        <p>Is there a check scanner on site?</p>
+                        <select id="checkScanner" name="checkScanner">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+
+                        <label for="printerMaintenance">Who provides printer/copier maintenance?</label>
+                        <input type="text" id="printerMaintenance" name="printerMaintenance">
+
+                        <p>Is the agreement transferable?</p>
+                        <select id="agreementTransferable" name="agreementTransferable">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+
+                        <p>Is there a fob/remote access system on any PCs?</p>
+                        <select id="fobSystem" name="fobSystem" onchange="toggleFobContract(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="fobContract" class="conditional-question">
+                            <p>Please provide the fob/remote contract:</p>
+                            <input type="file" id="fobContractFile" name="fobContractFile">
+                        </div>
+
+                        <p>Is there gate access software installed on any PC?</p>
+                        <select id="gateAccess" name="gateAccess" onchange="toggleGateContract(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="gateContract" class="conditional-question">
+                            <p>Please provide the gate access contract:</p>
+                            <input type="file" id="gateContractFile" name="gateContractFile">
+                        </div>
+
+                        <p>Is there any camera software installed on any PC?</p>
+                        <select id="cameraSoftware" name="cameraSoftware" onchange="toggleCameraContract(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="cameraContract" class="conditional-question">
+                            <p>Please provide the camera system contract:</p>
+                            <input type="file" id="cameraContractFile" name="cameraContractFile">
+                        </div>
+
+                        <p>Is there a key management system?</p>
+                        <select id="keyManagement" name="keyManagement" onchange="toggleKeyContract(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="keyContract" class="conditional-question">
+                            <p>Please provide the key management contract:</p>
+                            <input type="file" id="keyContractFile" name="keyContractFile">
+                        </div>
+
+                        <label for="additionalInfo">Is there anything additional that we should know?</label>
+                        <textarea 
+                            id="additionalInfo" 
+                            name="additionalInfo" 
+                            rows="4" 
+                            style="width: 100%; padding: 10px; margin-top: 10px;"
+                        ></textarea>
+
+                        <label for="contractFiles">Please attach the most recent internet & telecom invoice, as well as any requested contracts:</label>
+                        <input type="file" id="contractFiles" name="contractFiles" multiple>
+
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        function toggleConditionalQuestion(select) {
+            const conditionalQuestion = document.getElementById('conditionalQuestion');
+            if (select.value === 'Yes') {
+                conditionalQuestion.style.display = 'block';
+            } else {
+                conditionalQuestion.style.display = 'none';
+            }
+        }
+
+        function toggleHardwareDetails(select) {
+            const hardwareDetails = document.getElementById('hardwareDetails');
+            if (select.value === 'Yes') {
+                hardwareDetails.style.display = 'block';
+            } else {
+                hardwareDetails.style.display = 'none';
+            }
+        }
+
+        function toggleStaticDetails(select) {
+            const staticDetails = document.getElementById('staticDetails');
+            if (select.value === 'Yes') {
+                staticDetails.style.display = 'block';
+            } else {
+                staticDetails.style.display = 'none';
+            }
+        }
+
+        function toggleWifiDetails(select) {
+            const wifiDetails = document.getElementById('wifiDetails');
+            if (select.value === 'Yes') {
+                wifiDetails.style.display = 'block';
+            } else {
+                wifiDetails.style.display = 'none';
+            }
+        }
+
+        function toggleWipeDetails(select) {
+            const wipeDetails = document.getElementById('wipeDetails');
+            if (select.value === 'Wiped' || select.value === 'Reset') {
+                wipeDetails.style.display = 'block';
+            } else {
+                wipeDetails.style.display = 'none';
+            }
+        }
+
+        function toggleFobContract(select) {
+            const fobContract = document.getElementById('fobContract');
+            if (select.value === 'Yes') {
+                fobContract.style.display = 'block';
+            } else {
+                fobContract.style.display = 'none';
+            }
+        }
+
+        function toggleGateContract(select) {
+            const gateContract = document.getElementById('gateContract');
+            if (select.value === 'Yes') {
+                gateContract.style.display = 'block';
+            } else {
+                gateContract.style.display = 'none';
+            }
+        }
+
+        function toggleCameraContract(select) {
+            const cameraContract = document.getElementById('cameraContract');
+            if (select.value === 'Yes') {
+                cameraContract.style.display = 'block';
+            } else {
+                cameraContract.style.display = 'none';
+            }
+        }
+
+        function toggleKeyContract(select) {
+            const keyContract = document.getElementById('keyContract');
+            if (select.value === 'Yes') {
+                keyContract.style.display = 'block';
+            } else {
+                keyContract.style.display = 'none';
+            }
+        }
+    </script>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('aionForm');
+            const submitButton = form.querySelector('input[type="submit"]');
+            const originalButtonText = submitButton.value;
+            
+            try {
+
+                submitButton.disabled = true;
+                submitButton.value = 'Submitting...';
+                
+
+                const formData = new FormData(form);
+                
+
+                console.log('Form data being sent:');
+                for (let [key, value] of formData.entries()) {
+                    if (value instanceof File) {
+                        console.log(`${key}: File - ${value.name} (${value.size} bytes)`);
+                    } else {
+                        console.log(`${key}: ${value}`);
+                    }
+                }
+                
+                const maxFileSize = 1024 * 1024;
+                for (let [key, value] of formData.entries()) {
+                    if (value instanceof File && value.size > maxFileSize) {
+                        throw new Error(`File ${value.name} is too large. Maximum size is 1MB.`);
+                    }
+                }
+                
+                const submitUrl = 'https://onboarding.aiontechnology.org/results';
+                console.log('Submitting to:', submitUrl);
+                
+                const response = await fetch(submitUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    mode: 'cors',
+                    credentials: 'include'
+                });
+                
+                console.log('Server response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `Server error: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Server response:', result);
+                
+                alert('Form submitted successfully!');
+                form.reset();
+                
+            } catch (error) {
+                console.error('Form submission error:', error);
+                console.error('Error stack:', error.stack);
+                alert('Error submitting form: ' + error.message);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.value = originalButtonText;
+            }
+        }
+
+        // Add file size validation on file selection
+        function validateFileSize(input) {
+            const maxFileSize = 1024 * 1024; // 1MB
+            const files = input.files;
+            
+            for (let i = 0; i < files.length; i++) {
+                if (files[i].size > maxFileSize) {
+                    alert(`File ${files[i].name} is too large. Maximum size is 1MB.`);
+                    input.value = ''; // Clear the file input
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        // Add event listeners for file inputs
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            input.addEventListener('change', function() {
+                validateFileSize(this);
+            });
+        });
+    </script>
+</html>
