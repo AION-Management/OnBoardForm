@@ -203,7 +203,7 @@
                 font-size: 40px;;
             }
 
-            @media (max-width: 768px) {
+            @media (max-width: 1440px) {
                 body {
                 font-family: Arial, sans-serif;
                 margin: 0;
@@ -266,7 +266,7 @@
                         
                         <label for="itContactPhone">IT Contact's Phone Number:</label>
                         <div class="phone-input-container">
-                            <input type="tel" id="itContactPhone" name="itContactPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required placeholder="***-***-****">
+                            <input type="tel" id="itContactPhone" name="itContactPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required placeholder="*** *** ****">
                         </div>
                         
                         <label for="itContactEmail">IT Contact's Email:</label>
@@ -329,7 +329,7 @@
 
                         <label for="officePhone">Office Phone Number(s):</label>
                         <div class="phone-input-container">
-                            <input type="tel" id="officePhone" name="officePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="***-***-****">
+                            <input type="tel" id="officePhone" name="officePhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="*** *** ****">
                         </div>
 
                         <label for="computerCount">Number of computers (office & maintenance):</label>
@@ -358,14 +358,37 @@
                         </div>
 
                         <p>Is there a check scanner on site?</p>
-                        <select id="checkScanner" name="checkScanner">
+                        <select id="checkScanner" name="checkScanner" onchange="toggleScannerDetails(this)">
                             <option value="">Select an option</option>
                             <option value="Yes">Yes</option>
                             <option value="No">No</option>
                         </select>
+                        <div id="scannerDetails" class="conditional-question">
+                            <p>What is the model of the check scanner?</p>
+                            <input type="text" id="scannerModel" name="scannerModel">
+                        </div>
 
-                        <label for="printerMaintenance">Who provides printer/copier maintenance?</label>
-                        <input type="text" id="printerMaintenance" name="printerMaintenance">
+                        <p>Is there a printer/copier on site?</p>
+                        <select id="printerOnSite" name="printerOnSite" onchange="togglePrinterDetails(this)">
+                            <option value="">Select an option</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                        <div id="printerDetails" class="conditional-question">
+                            <p>What is the model of the printer/copier?</p>
+                            <input type="text" id="printerModel" name="printerModel">
+                            
+                            <p>Is there a printer/copier contract?</p>
+                            <select id="printerContract" name="printerContract" onchange="togglePrinterContract(this)">
+                                <option value="">Select an option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                            <div id="printerContractDetails" class="conditional-question">
+                                <p>Please provide the printer/copier contract:</p>
+                                <input type="file" id="printerContractFile" name="printerContractFile">
+                            </div>
+                        </div>
 
                         <p>Is the agreement transferable?</p>
                         <select id="agreementTransferable" name="agreementTransferable">
@@ -436,6 +459,34 @@
         </div>
     </body>
     <script>
+        function formatPhoneNumber(input) {
+            // Remove all non-numeric characters
+            let value = input.value.replace(/\D/g, '');
+            
+            // Format the number as XXX-XXX-XXXX
+            if (value.length > 0) {
+                if (value.length <= 3) {
+                    value = value;
+                } else if (value.length <= 6) {
+                    value = value.slice(0,3) + '-' + value.slice(3);
+                } else {
+                    value = value.slice(0,3) + '-' + value.slice(3,6) + '-' + value.slice(6,10);
+                }
+            }
+            
+            // Update the input value
+            input.value = value;
+        }
+
+        // Add event listeners for phone number inputs
+        document.getElementById('itContactPhone').addEventListener('input', function() {
+            formatPhoneNumber(this);
+        });
+
+        document.getElementById('officePhone').addEventListener('input', function() {
+            formatPhoneNumber(this);
+        });
+
         function toggleConditionalQuestion(select) {
             const conditionalQuestion = document.getElementById('conditionalQuestion');
             if (select.value === 'Yes') {
@@ -516,6 +567,35 @@
                 keyContract.style.display = 'none';
             }
         }
+
+        function toggleScannerDetails(select) {
+            const scannerDetails = document.getElementById('scannerDetails');
+            if (select.value === 'Yes') {
+                scannerDetails.style.display = 'block';
+            } else {
+                scannerDetails.style.display = 'none';
+            }
+        }
+
+        function togglePrinterDetails(select) {
+            const printerDetails = document.getElementById('printerDetails');
+            if (select.value === 'Yes') {
+                printerDetails.style.display = 'block';
+            } else {
+                printerDetails.style.display = 'none';
+                // Also hide the contract details if they were visible
+                document.getElementById('printerContractDetails').style.display = 'none';
+            }
+        }
+
+        function togglePrinterContract(select) {
+            const printerContractDetails = document.getElementById('printerContractDetails');
+            if (select.value === 'Yes') {
+                printerContractDetails.style.display = 'block';
+            } else {
+                printerContractDetails.style.display = 'none';
+            }
+        }
     </script>
     <script>
         async function submitForm(event) {
@@ -524,16 +604,72 @@
             const form = document.getElementById('aionForm');
             const submitButton = form.querySelector('input[type="submit"]');
             const originalButtonText = submitButton.value;
+
+            // Check all required text inputs
+            const requiredInputs = form.querySelectorAll('input[required]');
+            for (let input of requiredInputs) {
+                if (!input.value.trim()) {
+                    alert(`Please fill in ${input.previousElementSibling.textContent.replace(':', '')}`);
+                    input.focus();
+                    return;
+                }
+            }
+
+            // Check only main select dropdowns (excluding those in conditional questions)
+            const mainSelects = form.querySelectorAll('select:not(.conditional-question select)');
+            for (let select of mainSelects) {
+                if (!select.value) {
+                    select.focus();
+                    return;
+                }
+            }
+
+            // Check only visible conditional questions
+            const conditionalQuestions = form.querySelectorAll('.conditional-question');
+            for (let question of conditionalQuestions) {
+                // Only validate if the question is visible
+                if (question.style.display === 'block') {
+                    const textarea = question.querySelector('textarea');
+                    const fileInput = question.querySelector('input[type="file"]');
+                    const select = question.querySelector('select');
+                    
+                    if (textarea && !textarea.value.trim()) {
+                        const questionText = question.querySelector('p').textContent;
+                        alert(`Please provide details for: ${questionText}`);
+                        textarea.focus();
+                        return;
+                    }
+                    
+                    if (fileInput && !fileInput.files.length) {
+                        const questionText = question.querySelector('p').textContent;
+                        alert(`Please upload the required file for: ${questionText}`);
+                        fileInput.focus();
+                        return;
+                    }
+
+                    if (select && !select.value) {
+                        const questionText = question.querySelector('p').textContent;
+                        alert(`Please select an option for: ${questionText}`);
+                        select.focus();
+                        return;
+                    }
+                }
+            }
+
+            // Check if at least one file is uploaded for the contract files
+            const contractFilesInput = document.getElementById('contractFiles');
+            if (!contractFilesInput.files.length) {
+                alert('Please attach at least one file for the last question');
+                contractFilesInput.focus();
+                return;
+            }
             
             try {
-
                 submitButton.disabled = true;
                 submitButton.value = 'Submitting...';
                 
-
                 const formData = new FormData(form);
                 
-
                 console.log('Form data being sent:');
                 for (let [key, value] of formData.entries()) {
                     if (value instanceof File) {
