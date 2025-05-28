@@ -14,5 +14,4 @@ services:
       - ./results:/app/results # Mount the logs directory to /app/logs in the container
     expose:
       - "3001" # Expose port 5000 (internal to Docker network)
-    environment:
     restart: always # Restart the container if it stops
