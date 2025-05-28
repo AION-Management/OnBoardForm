@@ -1,0 +1,18 @@
+# Docker Compose configuration for AION License Count application
+
+#version: '3.8' # Uncomment and set the version if needed
+
+services:
+  # Web service configuration
+  web:
+    build:
+      context: . # Build context is the current directory
+      dockerfile: Dockerfile # Use the Dockerfile in the current directory
+
+    volumes:
+      - .:/app # Mount the current directory to /app in the container
+      - ./results:/app/results # Mount the logs directory to /app/logs in the container
+    expose:
+      - "3001" # Expose port 5000 (internal to Docker network)
+    environment:
+    restart: always # Restart the container if it stops
