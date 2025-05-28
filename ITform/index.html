@@ -724,7 +724,7 @@
 
         // Add file size validation on file selection
         function validateFileSize(input) {
-            const maxFileSize = 1024 * 1024; // 1MB
+            const maxFileSize = 1048576; // 1MB
             const files = input.files;
             
             for (let i = 0; i < files.length; i++) {
