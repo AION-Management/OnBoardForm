@@ -127,11 +127,13 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 3001;
+const SSL_CERT_PATH = process.env.SSL_CERT_PATH || '/etc/ssl/certs';
+const DOMAIN = process.env.DOMAIN || 'onboarding.aiontechnology.org';
 
 // SSL certificate options
 const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/onboarding.aiontechnology.org/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/onboarding.aiontechnology.org/fullchain.pem')
+    key: fs.readFileSync(path.join(SSL_CERT_PATH, 'privkey.pem')),
+    cert: fs.readFileSync(path.join(SSL_CERT_PATH, 'fullchain.pem'))
 };
 
 // Create HTTPS server

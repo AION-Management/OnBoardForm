@@ -9,10 +9,15 @@ services:
       context: .
       dockerfile: Dockerfile
 
+    environment:
+      - SSL_CERT_PATH=/etc/ssl/certs
+      - DOMAIN=onboarding.aiontechnology.org
+
     volumes:
       - .:/app
       - /app/node_modules
       - ./results:/app/results
+      - ./ssl:/etc/ssl/certs:ro
     ports:
       - "3001:3001"
     restart: always
