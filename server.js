@@ -130,13 +130,18 @@ const PORT = process.env.PORT || 3001;
 const SSL_CERT_PATH = process.env.SSL_CERT_PATH || '/etc/ssl/certs';
 const DOMAIN = process.env.DOMAIN || 'onboarding.aiontechnology.org';
 
-// SSL certificate options
-const options = {
-    key: fs.readFileSync(path.join(SSL_CERT_PATH, 'privkey.pem')),
-    cert: fs.readFileSync(path.join(SSL_CERT_PATH, 'fullchain.pem'))
-};
-
-// Create HTTPS server
-app.listen(PORT, () => {
-    console.log(`HTTP Server running on port ${PORT}`);
-});
+// Try to create HTTPS server if SSL certificates exist
+try {
+    const options = {
+        key: fs.readFileSync(path.join(SSL_CERT_PATH, 'privkey.pem')),
+        cert: fs.readFileSync(path.join(SSL_CERT_PATH, 'fullchain.pem'))
+    };
+    https.createServer(options, app).listen(PORT, () => {
+        console.log(`HTTPS Server running on port ${PORT}`);
+    });
+} catch (error) {
+    console.log('SSL certificates not found, falling back to HTTP');
+    app.listen(PORT, () => {
+        console.log(`HTTP Server running on port ${PORT}`);
+    });
+}
