@@ -1,22 +1,22 @@
 # Dockerfile for AION License Count application
 
-# Use Python 3.12.3 with Bullseye as the base image
-FROM node:23.7
+# Use Node.js LTS version
+FROM node:20-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file into the container
+# Copy package files
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Copy the rest of the application code into the container
+# Copy the rest of the application code
 COPY . .
 
 EXPOSE 3001
 
-# Command to run the application using Gunicorn
-# -w 4: Use 4 worker processes
-# -b 0.0.0.0:5000: Bind to all interfaces on port 5000
+# Command to run the application
 CMD ["node", "server.js"]
 
