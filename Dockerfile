@@ -28,5 +28,5 @@ RUN chmod +x process_submissions.sh
 EXPOSE 3001
 
 # Command to run the application
-CMD ["./start-server.sh"]
+CMD ["node", "server.js"]
 
