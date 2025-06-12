@@ -24,3 +24,5 @@ services:
     ports:
       - "3001:3001"
     restart: always
+    labels:
+      io.portainer.accesscontrol.users: regularuser
