@@ -630,7 +630,7 @@
                 // Only validate if the question is visible
                 if (question.style.display === 'block') {
                     const textarea = question.querySelector('textarea');
-                    const fileInput = question.querySelector('input[type="file"]');
+                    const fileInputs = question.querySelectorAll('input[type="file"]');
                     const select = question.querySelector('select');
                     
                     if (textarea && !textarea.value.trim()) {
@@ -639,12 +639,15 @@
                         textarea.focus();
                         return;
                     }
-                    
-                    if (fileInput && !fileInput.files.length) {
-                        const questionText = question.querySelector('p').textContent;
-                        alert(`Please upload the required file for: ${questionText}`);
-                        fileInput.focus();
-                        return;
+
+                    // Only require file inputs that are visible
+                    for (let fileInput of fileInputs) {
+                        if (fileInput.offsetParent !== null && !fileInput.files.length) {
+                            const questionText = fileInput.closest('.conditional-question').querySelector('p').textContent;
+                            alert(`Please upload the required file for: ${questionText}`);
+                            fileInput.focus();
+                            return;
+                        }
                     }
 
                     if (select && !select.value) {
